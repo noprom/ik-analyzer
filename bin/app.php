@@ -21,8 +21,8 @@ function filter_file($infilename, $outfilename)
 function start_transfer()
 {
     $dir = "/tmp/ik/";
-    $files = ["app.sgp-gp-01.json"];
-    //$files = ["app.sgp-gp-01.json", "app.sgp-gp-02.json", "app.sgp-gp-03.json", "app.sgp-gp-04.json", "app.sgp-gp-05.json"];
+//    $files = ["app.sgp-gp-01.json"];
+    $files = ["app.sgp-gp-01.json", "app.sgp-gp-02.json", "app.sgp-gp-03.json", "app.sgp-gp-04.json", "app.sgp-gp-05.json"];
     `rm -rf /tmp/ik/*`;
     `mkdir -p /tmp/ik`;
     `cp tags /tmp/ik/`;
