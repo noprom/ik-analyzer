@@ -14,7 +14,13 @@ import java.io.StringReader;
  */
 public class PreProcess {
 
-    //对初始的训练集预处理之后形成的训练集放在另一个String[]中
+    /**
+     * 对初始的训练集预处理之后形成的训练集放在另一个String[]中
+     *
+     * @param InputDocs 输入文档
+     * @return
+     * @throws IOException
+     */
     public String[] preProcessMain(String[] InputDocs) throws IOException {
 
         String[] OutputDocs = new String[InputDocs.length];

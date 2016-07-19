@@ -10,7 +10,12 @@ import java.util.List;
  */
 public class InputOutput {
 
-    //读入文档（此文档的每一行代表一个独立的文档），将每一行放入字符串数组中
+    /**
+     * 读入文档（此文档的每一行代表一个独立的文档），将每一行放入字符串数组中
+     *
+     * @param inputFileName 文件名
+     * @return
+     */
     public String[] readInput(String inputFileName) {
         //将inputFileName中的内容读入到一个字符串数组中
         List<String> ret = new ArrayList<String>();
@@ -29,6 +34,12 @@ public class InputOutput {
         return (String[]) ret.toArray(fileString);
     }
 
+    /**
+     * 写文件
+     *
+     * @param outputContent  文件内容
+     * @param outputFileName 文件名
+     */
     public void writeOutput(String[] outputContent, String outputFileName) {
         //将outputContent中的内容写入文件outputFileName中
         File f = new File(outputFileName);
