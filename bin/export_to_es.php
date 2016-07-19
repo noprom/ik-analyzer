@@ -10,14 +10,18 @@
 function gp2es($gpfile, $segfile, $esfile)
 {
     $handler = fopen($gpfile, "rb");
+    $apps = [];
     while(!feof($handler)) {
-        $line = fgets($handler);
+        $line = trim(fgets($handler));
         $line = json_decode($line, true);
+        if(empty($line))
+            continue;
         $pkg = $line["pkg"];
         $line["tag"] = get_tag_by_pkg($segfile, $pkg);
-        $line = json_encode($line, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        file_put_contents($esfile, $line, FILE_APPEND | LOCK_EX);
+        $apps[] = $line;
     }
+    $apps = json_encode($apps, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    file_put_contents($esfile, $apps);
     fclose($handler);
 }
 
@@ -40,4 +44,14 @@ function get_tag_by_pkg($filename, $pkg)
             return $arr[1];
     }
     fclose($handler);
+}
+
+//升级为申请4096M内存
+ini_set('memory_limit', '4096M');
+$data_dir = "json/";
+$gpfile = ["app.sgp-gp-01.tmp.json"];//原始下载下来的gp文件
+$segfile = $data_dir . "app-tags-out.txt";//分词结果汇总文件
+
+foreach($gpfile as $gp) {
+    gp2es($data_dir . $gp, $segfile, $data_dir . "es." . $gp);
 }
