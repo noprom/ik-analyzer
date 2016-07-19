@@ -19,21 +19,19 @@ import java.util.*;
  */
 public class AppsAnalyzer {
 
-    // 数据目录
-    private String dataPath = "data/app/";
-    private String jsonFile = dataPath + "apps.json";
-    private String outFileName = dataPath + "out.txt";
-
     /**
      * 对app进行分词
+     * 将apps.json文件中的文本进行分词,得到分词结果文件analyzer-out.txt
      *
+     * @param inFile  输入文件
+     * @param outFile 输出文件
      * @throws IOException
      */
-    public void appAnalyzer() throws IOException {
+    public void appAnalyzer(String inFile, String outFile) throws IOException {
         InputOutput rw = new InputOutput();
 
         // 1:从文件 trainFile读入训练集放在String[](its)中
-        String[] its = rw.readInput(jsonFile);
+        String[] its = rw.readInput(inFile);
 
         // 2:对训练集预处理之后形成的训练集的词集合放在一个String[]（docs）中
         String[] OutputDocs = new String[its.length];
@@ -41,11 +39,10 @@ public class AppsAnalyzer {
         // 3:统计词频用
         Map<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
         List<String> pkgList = new ArrayList<String>();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
         int i = 0;
         while (i < its.length) {
             String line = its[i];
-//            System.out.println(line);
             JSONObject jsonObject = new JSONObject(line);
             String pkg = jsonObject.getString("pkg");
             String desc = jsonObject.getString("desc").replace(" ", "");
@@ -91,7 +88,6 @@ public class AppsAnalyzer {
             Integer wordCount = 0;
             for (Map.Entry<String, Integer> entry : list) {
                 result += entry.getKey() + ",";
-//                        + entry.getValue() + ",";
                 wordCount++;
                 if (wordCount >= 20)
                     break;
@@ -103,8 +99,18 @@ public class AppsAnalyzer {
         writer.close();
     }
 
+
     public static void main(String[] args) throws IOException {
+        // 数据目录
+        String dataPath = "data/app/";
+        String jsonFile = dataPath + "apps.json";//原始json文件
+        String tagsFile = dataPath + "tags";//聚类标签
+        String tagsSegFile = dataPath + "tags-seg";//聚类标签分词
+        String analyzerOutFile = dataPath + "analyzer-out.txt";//应用分词输出文件
+        String appTagsOutFile = dataPath + "app-tags-out.txt";//应用分词过滤之后的tag
+
         AppsAnalyzer analyzer = new AppsAnalyzer();
-        analyzer.appAnalyzer();
+        // 1.得到应用第一步分词结果
+        analyzer.appAnalyzer(jsonFile, analyzerOutFile);
     }
 }
