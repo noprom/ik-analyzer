@@ -41,6 +41,9 @@ public class AppsAnalyzer {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
         for (String line : inList) {
+            // 替换\t等
+            line = line.replaceAll("\\s+", "");
+            line = line.replaceAll("\\t+", "");
             JSONObject jsonObject = new JSONObject(line);
             String pkg = jsonObject.getString("pkg");
             String desc = jsonObject.getString("desc").replace(" ", "");
