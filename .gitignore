@@ -4,4 +4,5 @@ target
 data/app/*.json
 data/app/*.txt
 out
-bin/apps.json
+bin/json
+bin/*.json

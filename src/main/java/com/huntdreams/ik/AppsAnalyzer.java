@@ -43,18 +43,24 @@ public class AppsAnalyzer {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
         for (String line : inList) {
-            // 替换\t等
-            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            Matcher m = p.matcher(line);
-            line = m.replaceAll("");
-            System.out.println("----->" + line);
-            JSONObject jsonObject = new JSONObject(line);
-            String pkg = jsonObject.getString("pkg");
-            String desc = jsonObject.getString("desc").replace(" ", "");
-            String meta = jsonObject.getJSONArray("meta").toString().replace(" ", "");
-            String t = desc + " " + meta;
-            String row = pkg + "-->";
-            IKSegmentation ikSeg = new IKSegmentation(new StringReader(t), true);
+//            // 替换\t等
+//            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+//            Matcher m = p.matcher(line);
+//            line = m.replaceAll("");
+//            System.out.println("----->" + line);
+//            JSONObject jsonObject = new JSONObject(line);
+//            String pkg = jsonObject.getString("pkg");
+//            String desc = jsonObject.getString("desc").replace(" ", "");
+//            String meta = jsonObject.getJSONArray("meta").toString().replace(" ", "");
+//            String t = desc + " " + meta;
+
+            String[] arr = line.split("--->");
+            if (arr.length != 2) {
+                continue;
+            }
+            String pkg = arr[0];
+            String row = pkg + "--->";
+            IKSegmentation ikSeg = new IKSegmentation(new StringReader(arr[1]), true);
 
             // 统计
             HashMap pkgMap = map.get(pkg);
@@ -154,6 +160,9 @@ public class AppsAnalyzer {
         // 填充app
         for (String line : appTagLines) {
             String[] arr = line.split(":");
+            if (arr.length != 2) {
+                continue;
+            }
             ArrayList<String> tags = new ArrayList<String>();
             for (String tag : arr[1].split(",")) {
                 tags.add(tag);
@@ -236,16 +245,23 @@ public class AppsAnalyzer {
             dataPath = defaultDir;
         }
 
-        String jsonFile = dataPath + "apps.json";//原始json文件
+        String jsonFile = dataPath + "out.app.sgp-gp-01.json";//原始json文件
         String tagsFile = dataPath + "tags";//聚类标签
         String tagsSegFile = dataPath + "tags-seg";//聚类标签分词
         String analyzerOutFile = dataPath + "analyzer-out.txt";//应用分词输出文件
         String appTagsOutFile = dataPath + "app-tags-out.txt";//应用分词过滤之后的tag
 
+        if (args.length == 2) {
+            jsonFile = args[0];
+            appTagsOutFile = args[1];
+            String[] arr = jsonFile.split("/");
+            String realName = arr[arr.length - 1];
+            analyzerOutFile += realName;
+        }
         // 1.得到应用第一步分词结果
-        analyzer.appAnalyzer(jsonFile, analyzerOutFile);
+        // analyzer.appAnalyzer(jsonFile, analyzerOutFile);
         // 2.百度tag分词
-        analyzer.tagAnalyzer(tagsFile, tagsSegFile);
+        // analyzer.tagAnalyzer(tagsFile, tagsSegFile);
         // 3.应用分词再次过滤
         analyzer.tagFilter(analyzerOutFile, tagsSegFile, appTagsOutFile);
     }
