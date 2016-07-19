@@ -1,13 +1,11 @@
 package com.huntdreams.ik;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.wltea.analyzer.IKSegmentation;
 import org.wltea.analyzer.Lexeme;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -99,6 +97,31 @@ public class AppsAnalyzer {
         writer.close();
     }
 
+    /**
+     * 对标签进一步分词
+     *
+     * @param inFile  输入文件
+     * @param outFile 输出文件
+     */
+    public void tagAnalyzer(String inFile, String outFile) throws IOException {
+        File file = new File(inFile);
+        List<String> lines = FileUtils.readLines(file, "UTF-8");
+        for (String line : lines) {
+            IKSegmentation ikSeg = new IKSegmentation(new StringReader(line), true);
+            String row = null;
+            Lexeme l = null;
+            while ((l = ikSeg.next()) != null) {
+                //将CJK_NORMAL类的词写入目标文件
+                if (l.getLexemeType() == Lexeme.TYPE_CJK_NORMAL) {
+                    //后续在此添加判断此词是否为停用词，若不是则写入目标文件中
+                    String text = l.getLexemeText();
+                    row += '|' + text;
+                }
+            }
+            System.out.println(row);
+        }
+    }
+
 
     public static void main(String[] args) throws IOException {
         // 数据目录
@@ -112,5 +135,8 @@ public class AppsAnalyzer {
         AppsAnalyzer analyzer = new AppsAnalyzer();
         // 1.得到应用第一步分词结果
         analyzer.appAnalyzer(jsonFile, analyzerOutFile);
+        // 2.百度tag分词
+        analyzer.tagAnalyzer(tagsFile, tagsSegFile);
+        // 3.应用分词再次过滤
     }
 }
