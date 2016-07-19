@@ -34,19 +34,13 @@ public class AppsAnalyzer {
         if (!file.exists()) {
             file.createNewFile();
         }
-        // 1:从文件 trainFile读入训练集放在String[](its)中
-        String[] its = rw.readInput(inFile);
+        List<String> inList = FileUtils.readLines(new File(inFile), FILE_ENCODING);
 
-        // 2:对训练集预处理之后形成的训练集的词集合放在一个String[]（docs）中
-        String[] OutputDocs = new String[its.length];
-
-        // 3:统计词频用
+        // 统计词频用
         Map<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
-        List<String> pkgList = new ArrayList<String>();
+
         BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
-        int i = 0;
-        while (i < its.length) {
-            String line = its[i];
+        for (String line : inList) {
             JSONObject jsonObject = new JSONObject(line);
             String pkg = jsonObject.getString("pkg");
             String desc = jsonObject.getString("desc").replace(" ", "");
@@ -83,9 +77,6 @@ public class AppsAnalyzer {
                 }
             });
             map.put(pkg, pkgMap);
-
-            OutputDocs[i] = row;
-            i++;
 
             // 输出高频词
             String result = pkg + ":";
