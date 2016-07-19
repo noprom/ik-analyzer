@@ -47,6 +47,7 @@ public class AppsAnalyzer {
             Pattern p = Pattern.compile("\\s*|\t|\r|\n");
             Matcher m = p.matcher(line);
             line = m.replaceAll("");
+            System.out.println("----->" + line);
             JSONObject jsonObject = new JSONObject(line);
             String pkg = jsonObject.getString("pkg");
             String desc = jsonObject.getString("desc").replace(" ", "");
