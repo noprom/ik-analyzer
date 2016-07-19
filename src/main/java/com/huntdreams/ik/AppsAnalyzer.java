@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class AppsAnalyzer {
 
+    private static final String FILE_ENCODING = "UTF-8";
+
     /**
      * 对app进行分词
      * 将apps.json文件中的文本进行分词,得到分词结果文件analyzer-out.txt
@@ -105,23 +107,69 @@ public class AppsAnalyzer {
      */
     public void tagAnalyzer(String inFile, String outFile) throws IOException {
         File file = new File(inFile);
-        List<String> lines = FileUtils.readLines(file, "UTF-8");
+        List<String> lines = FileUtils.readLines(file, FILE_ENCODING);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
         for (String line : lines) {
             IKSegmentation ikSeg = new IKSegmentation(new StringReader(line), true);
-            String row = null;
+            String row = line.split(",")[0];
             Lexeme l = null;
             while ((l = ikSeg.next()) != null) {
                 //将CJK_NORMAL类的词写入目标文件
                 if (l.getLexemeType() == Lexeme.TYPE_CJK_NORMAL) {
                     //后续在此添加判断此词是否为停用词，若不是则写入目标文件中
                     String text = l.getLexemeText();
-                    row += '|' + text;
+                    row += ',' + text;
                 }
             }
+            // 写入文件
+            writer.write(row + "\n");
             System.out.println(row);
         }
+        writer.close();
     }
 
+    /**
+     * 对app分词进行过滤
+     *
+     * @param appTagFileName    原始app分词结果文件
+     * @param filterTagFileName 标签过滤文件
+     * @param outFileName       过滤输出结果文件
+     */
+    public void tagFilter(String appTagFileName, String filterTagFileName, String outFileName) throws IOException {
+        // app分词结果
+        Map<String, ArrayList<String>> apps = new HashMap<String, ArrayList<String>>();
+        // 过滤分词
+        Map<String, ArrayList<String>> filterTags = new HashMap<String, ArrayList<String>>();
+        // 过滤结果
+        File appTagFile = new File(appTagFileName);
+        File filterTagFile = new File(filterTagFileName);
+        List<String> appTagLines = FileUtils.readLines(appTagFile, FILE_ENCODING);
+        List<String> filterTagLines = FileUtils.readLines(filterTagFile, FILE_ENCODING);
+        // 填充app
+        for (String line : appTagLines) {
+            String[] arr = line.split(":");
+            ArrayList<String> tags = new ArrayList<String>();
+            for (String tag : arr[1].split(",")) {
+                tags.add(tag);
+            }
+            apps.put(arr[0], tags);
+        }
+        // 填充过滤的分词
+        for (String line : filterTagLines) {
+            String[] arr = line.split(",");
+            ArrayList<String> tags = new ArrayList<String>();
+            for (int i = 1; i < arr.length; i++) {
+                tags.add(arr[i]);
+            }
+            filterTags.put(arr[0], tags);
+        }
+        // 开始过滤
+        for (Map.Entry<String, ArrayList<String>> app : apps.entrySet()) {
+            for (Map.Entry<String, ArrayList<String>> filter : filterTags.entrySet()) {
+                // TODO:
+            }
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         // 数据目录
@@ -138,5 +186,6 @@ public class AppsAnalyzer {
         // 2.百度tag分词
         analyzer.tagAnalyzer(tagsFile, tagsSegFile);
         // 3.应用分词再次过滤
+
     }
 }
