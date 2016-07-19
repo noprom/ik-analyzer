@@ -7,6 +7,8 @@ import org.wltea.analyzer.Lexeme;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * AppsAnalyzer
@@ -42,8 +44,9 @@ public class AppsAnalyzer {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
         for (String line : inList) {
             // 替换\t等
-            line = line.replaceAll("\\s+", "");
-            line = line.replaceAll("\\t+", "");
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(line);
+            line = m.replaceAll("");
             JSONObject jsonObject = new JSONObject(line);
             String pkg = jsonObject.getString("pkg");
             String desc = jsonObject.getString("desc").replace(" ", "");
