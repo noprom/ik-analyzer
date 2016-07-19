@@ -141,6 +141,10 @@ public class AppsAnalyzer {
         // 过滤分词
         Map<String, ArrayList<String>> filterTags = new HashMap<String, ArrayList<String>>();
         // 过滤结果
+        Map<String, ArrayList<String>> tagResult = new HashMap<String, ArrayList<String>>();
+        Map<String, HashMap<String, Integer>> filterResult = new HashMap<String, HashMap<String, Integer>>();
+        // 写结果
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName));
         File appTagFile = new File(appTagFileName);
         File filterTagFile = new File(filterTagFileName);
         List<String> appTagLines = FileUtils.readLines(appTagFile, FILE_ENCODING);
@@ -165,10 +169,60 @@ public class AppsAnalyzer {
         }
         // 开始过滤
         for (Map.Entry<String, ArrayList<String>> app : apps.entrySet()) {
-            for (Map.Entry<String, ArrayList<String>> filter : filterTags.entrySet()) {
-                // TODO:
+            ArrayList<String> filteredTag = new ArrayList<String>();
+            String appLine = app.getKey() + ":";
+            for (String appTag : app.getValue()) {
+                for (Map.Entry<String, ArrayList<String>> filter : filterTags.entrySet()) {
+                    for (String filterTag : filter.getValue()) {
+                        if (appTag.contains(filterTag)) {
+                            // 将结果加进该app对应的标签中
+                            if (filteredTag.size() == 0)
+                                filteredTag.add(filter.getKey());
+                            else
+                                filteredTag.set(0, filter.getKey());
+                            filteredTag.add(filterTag);
+                            appLine += filterTag + ",";
+                        }
+                    }
+                }
             }
+            appLine = appLine.substring(0, appLine.length() - 1);
+            System.out.println(appLine);
+            tagResult.put(app.getKey(), filteredTag);
         }
+        // 统计结果排序输出
+        for (Map.Entry<String, ArrayList<String>> item : tagResult.entrySet()) {
+            HashMap<String, Integer> weight = new HashMap<String, Integer>();
+            String pkg = item.getKey();
+            for (String tag : item.getValue()) {
+                Integer count = weight.get(tag) != null ? weight.get(tag) : 0;
+                weight.put(tag, count + 1);
+            }
+            filterResult.put(pkg, weight);
+
+            // 排序
+            List<Map.Entry<String, Integer>> list = new ArrayList<Map.Entry<String, Integer>>(weight.entrySet());
+
+            Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+                public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                    return (o2.getValue() - o1.getValue());
+                }
+            });
+
+            // 输出高频词
+            String result = pkg + ":";
+            Integer wordCount = 0;
+            for (Map.Entry<String, Integer> entry : list) {
+                result += entry.getKey() + ",";
+                wordCount++;
+                if (wordCount >= 20)
+                    break;
+            }
+            result = result.substring(0, result.length() - 1);
+            writer.write(result + "\n");
+            System.out.println(result);
+        }
+        writer.close();
     }
 
     public static void main(String[] args) throws IOException {
@@ -186,6 +240,6 @@ public class AppsAnalyzer {
         // 2.百度tag分词
         analyzer.tagAnalyzer(tagsFile, tagsSegFile);
         // 3.应用分词再次过滤
-
+        analyzer.tagFilter(analyzerOutFile, tagsSegFile, appTagsOutFile);
     }
 }
