@@ -20,17 +20,23 @@ function filter_file($infilename, $outfilename)
 
 function start_transfer()
 {
-	$files = ["app.sgp-gp-01.json", "app.sgp-gp-02.json", "app.sgp-gp-03.json", "app.sgp-gp-04.json", "app.sgp-gp-05.json"];
+    $dir = "/tmp/ik/";
+    $files = ["app.sgp-gp-01.json"];
+    //$files = ["app.sgp-gp-01.json", "app.sgp-gp-02.json", "app.sgp-gp-03.json", "app.sgp-gp-04.json", "app.sgp-gp-05.json"];
+    `rm -rf /tmp/ik/*`;
+    `mkdir -p /tmp/ik`;
+    `cp tags /tmp/ik/`;
+
 	foreach ($files as $file) {
-		filter_file($dir . $file, $dir . "out." . $file);
-	}	
-}
-
-function tags_sumup()
-{
-
+	    `cp json/$file $dir`;
+	    $filter_file = "out." . $file;
+		filter_file($dir . $file, $dir . $filter_file);
+		// 开始分词计算
+		`java -Xmn640m -Xms2560m -Xmx5120m -jar ik-analyzer.jar /tmp/ik/$filter_file /tmp/ik/app-tags-out-$filter_file.txt`;
+	}
 }
 
 //升级为申请3072M内存
 ini_set('memory_limit', '3072M');
-$dir = "/tmp/ik/";
+
+start_transfer();

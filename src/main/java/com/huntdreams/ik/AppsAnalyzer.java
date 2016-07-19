@@ -21,6 +21,7 @@ public class AppsAnalyzer {
 
     private static final String FILE_ENCODING = "UTF-8";
 
+
     /**
      * 对app进行分词
      * 将apps.json文件中的文本进行分词,得到分词结果文件analyzer-out.txt
@@ -258,10 +259,11 @@ public class AppsAnalyzer {
             String realName = arr[arr.length - 1];
             analyzerOutFile += realName;
         }
+
         // 1.得到应用第一步分词结果
-        // analyzer.appAnalyzer(jsonFile, analyzerOutFile);
+        analyzer.appAnalyzer(jsonFile, analyzerOutFile);
         // 2.百度tag分词
-        // analyzer.tagAnalyzer(tagsFile, tagsSegFile);
+        analyzer.tagAnalyzer(tagsFile, tagsSegFile);
         // 3.应用分词再次过滤
         analyzer.tagFilter(analyzerOutFile, tagsSegFile, appTagsOutFile);
     }
