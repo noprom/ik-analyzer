@@ -29,7 +29,11 @@ public class AppsAnalyzer {
      */
     public void appAnalyzer(String inFile, String outFile) throws IOException {
         InputOutput rw = new InputOutput();
-
+        File file = new File(outFile);
+        System.out.println(outFile);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
         // 1:从文件 trainFile读入训练集放在String[](its)中
         String[] its = rw.readInput(inFile);
 
@@ -226,15 +230,20 @@ public class AppsAnalyzer {
     }
 
     public static void main(String[] args) throws IOException {
+        AppsAnalyzer analyzer = new AppsAnalyzer();
         // 数据目录
+        String defaultDir = "/tmp/ik/";
         String dataPath = "data/app/";
+        if (args.length == 2) {
+            dataPath = defaultDir;
+        }
+
         String jsonFile = dataPath + "apps.json";//原始json文件
         String tagsFile = dataPath + "tags";//聚类标签
         String tagsSegFile = dataPath + "tags-seg";//聚类标签分词
         String analyzerOutFile = dataPath + "analyzer-out.txt";//应用分词输出文件
         String appTagsOutFile = dataPath + "app-tags-out.txt";//应用分词过滤之后的tag
 
-        AppsAnalyzer analyzer = new AppsAnalyzer();
         // 1.得到应用第一步分词结果
         analyzer.appAnalyzer(jsonFile, analyzerOutFile);
         // 2.百度tag分词
