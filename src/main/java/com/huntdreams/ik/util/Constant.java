@@ -18,5 +18,5 @@ public class Constant {
     public static final String SYS_CONF_PATH = "conf/sysconfig.properties";
 
     // 文件编码
-    public static final String FILE_ENCODING_UTF8 = "utf8";
+    public static final String FILE_ENCODING_UTF8 = "UTF-8";
 }

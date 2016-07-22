@@ -24,15 +24,19 @@ public class DBUtil {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName(CompositeFactory.getInstance().getString(Constant.DRIVER_CLASS_NAME_KEY));
+            String name = CompositeFactory.getString(Constant.DRIVER_CLASS_NAME_KEY);
+            if (name == null) {
+                System.out.println(name + "----->");
+            }
+            Class.forName(name);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         try {
             conn = DriverManager.getConnection(
-                    CompositeFactory.getInstance().getString(Constant.URL_KEY),
-                    CompositeFactory.getInstance().getString(Constant.USERNAME_KEY),
-                    CompositeFactory.getInstance().getString(Constant.PASSWORD_KEY));
+                    CompositeFactory.getString(Constant.URL_KEY),
+                    CompositeFactory.getString(Constant.USERNAME_KEY),
+                    CompositeFactory.getString(Constant.PASSWORD_KEY));
         } catch (SQLException e) {
             e.printStackTrace();
         }

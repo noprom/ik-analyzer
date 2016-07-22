@@ -1,7 +1,6 @@
 package com.huntdreams.ik.util;
 
 import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -14,7 +13,24 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class CompositeFactory {
 
-    private static CompositeConfiguration configuration;
+    /**
+     * 内部类
+     */
+    private static class Holder {
+        private final static CompositeConfiguration configuration = new CompositeConfiguration();
+
+        public static void init() {
+            try {
+                PropertiesConfiguration pc = new PropertiesConfiguration();
+                pc.setEncoding("utf8");
+                pc.load(Constant.SYS_CONF_PATH);
+                configuration.addConfiguration(pc);
+            } catch (ConfigurationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private CompositeFactory() {
     }
@@ -25,30 +41,8 @@ public class CompositeFactory {
      * @return
      */
     public static CompositeConfiguration getInstance() {
-        if (configuration == null) {
-            synchronized (CompositeFactory.class) {
-                configuration = new CompositeConfiguration();
-                try {
-                    PropertiesConfiguration pc = new PropertiesConfiguration();
-                    pc.setEncoding("utf8");
-                    pc.load(Constant.SYS_CONF_PATH);
-                    configuration.addConfiguration(pc);
-                } catch (ConfigurationException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return configuration;
-    }
-
-    /**
-     * 添加配置
-     *
-     * @param config
-     */
-    public static void addConfiguration(Configuration config) {
-        configuration = getInstance();
-        configuration.addConfiguration(config);
+        Holder.init();
+        return Holder.configuration;
     }
 
     /**
@@ -58,7 +52,7 @@ public class CompositeFactory {
      * @return
      */
     public static String getString(String key) {
-        return configuration.getString(key);
+        return getInstance().getString(key);
     }
 
     public static void main(String[] args) {

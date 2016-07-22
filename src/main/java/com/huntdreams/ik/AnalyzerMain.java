@@ -3,6 +3,7 @@ package com.huntdreams.ik;
 import com.huntdreams.ik.util.Constant;
 import com.huntdreams.ik.util.ReadFile;
 import com.huntdreams.ik.util.ReadFileThread;
+import org.json.JSONObject;
 
 import java.io.*;
 
@@ -23,8 +24,9 @@ public class AnalyzerMain {
      * 开始处理
      *
      * @param fileName 文件名
+     * @param tagFile  过滤用的tag文件
      */
-    public void run(String fileName) {
+    public void run(String fileName, String tagFile) {
         File file = new File(fileName);
         FileInputStream fis = null;
         try {
@@ -39,7 +41,7 @@ public class AnalyzerMain {
                 long startNum = j == 0 ? 0 : readFile.getStartNum(file, i * j);
                 long endNum = j + 1 < maxThreadNum ? readFile.getStartNum(file, i * (j + 1)) : -2;
                 // 具体监听实现
-                Analyzer listeners = new Analyzer(Constant.FILE_ENCODING_UTF8);
+                Analyzer listeners = new Analyzer(Constant.FILE_ENCODING_UTF8, tagFile);
                 new ReadFileThread(listeners, startNum, endNum, file.getPath()).start();
             }
         } catch (IOException e) {
@@ -51,9 +53,11 @@ public class AnalyzerMain {
 
     public static void main(String[] args) throws IOException {
         AnalyzerMain analyzer = new AnalyzerMain();
-        long start = System.currentTimeMillis();
-        analyzer.run("data/apps.json");
-        long end = System.currentTimeMillis();
-        System.out.println("start:" + start + ", end:" + end + ", total:" + (end - start) + "ms");
+        String jsonFile = "data/apps.json";
+        String tagFile = "data/tags.seg";
+        if (args.length == 1) {
+            jsonFile = args[0];
+        }
+        analyzer.run(jsonFile, tagFile);
     }
 }
