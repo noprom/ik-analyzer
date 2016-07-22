@@ -16,10 +16,10 @@ import java.sql.SQLException;
  */
 public class DBUtil {
 
-    private static String dirverClassName = "com.mysql.jdbc.Driver";
-    private static String url = "jdbc:mysql://127.0.0.1:3306/apps_crawer?useUnicode=true&characterEncoding=utf8";
-    private static String user = "root";
-    private static String password = "";
+    private static final String DRIVER_CLASS_NAME_KEY = "jdbc.driver";
+    private static final String URL_KEY = "jdbc.url";
+    private static final String USERNAME_KEY = "jdbc.username";
+    private static final String PASSWORD_KEY = "jdbc.password";
 
     /**
      * 获得数据库连接
@@ -29,12 +29,15 @@ public class DBUtil {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName(dirverClassName);
+            Class.forName(CompositeFactory.getInstance().getString(DRIVER_CLASS_NAME_KEY));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         try {
-            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(
+                    CompositeFactory.getInstance().getString(URL_KEY),
+                    CompositeFactory.getInstance().getString(USERNAME_KEY),
+                    CompositeFactory.getInstance().getString(PASSWORD_KEY));
         } catch (SQLException e) {
             e.printStackTrace();
         }
