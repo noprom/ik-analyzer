@@ -15,7 +15,7 @@ public class Constant {
     public static final String PASSWORD_KEY = "jdbc.password";
 
     // 配置文件路径
-    public static final String SYS_CONF_PATH = "sysconfig.properties";
+    public static final String SYS_CONF_PATH = "/tmp/ik/sysconfig.properties";
 
     // 文件编码
     public static final String FILE_ENCODING_UTF8 = "UTF-8";
