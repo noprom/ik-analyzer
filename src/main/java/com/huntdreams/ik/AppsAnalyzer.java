@@ -31,7 +31,6 @@ public class AppsAnalyzer {
      * @throws IOException
      */
     public void appAnalyzer(String inFile, String outFile) throws IOException {
-        InputOutput rw = new InputOutput();
         File file = new File(outFile);
         System.out.println(outFile);
         if (!file.exists()) {

@@ -1,4 +1,4 @@
-package com.huntdreams.ik;
+package com.huntdreams.ik.util;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;

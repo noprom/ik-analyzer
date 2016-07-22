@@ -1,4 +1,4 @@
-package com.huntdreams.ik;
+package com.huntdreams.ik.util;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
