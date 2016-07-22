@@ -1,6 +1,7 @@
 .idea
 *.iml
 target
+conf/jdbc.properties
 data/app/*.json
 data/app/*.txt
 out

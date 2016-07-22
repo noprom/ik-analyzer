@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 rm -rf /tmp/ik/*
 mkdir -p /tmp/ik
 cp tags /tmp/ik/
