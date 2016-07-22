@@ -4,6 +4,8 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import java.io.File;
+
 /**
  * 配置文件符合查询类
  * <p/>
@@ -19,7 +21,7 @@ public class CompositeFactory {
     private static class Holder {
         private final static CompositeConfiguration configuration = new CompositeConfiguration();
 
-        public static void init() {
+        private void init() {
             try {
                 PropertiesConfiguration pc = new PropertiesConfiguration();
                 pc.setEncoding("utf8");
@@ -31,7 +33,6 @@ public class CompositeFactory {
         }
     }
 
-
     private CompositeFactory() {
     }
 
@@ -41,7 +42,8 @@ public class CompositeFactory {
      * @return
      */
     public static CompositeConfiguration getInstance() {
-        Holder.init();
+        Holder holder = new Holder();
+        holder.init();
         return Holder.configuration;
     }
 

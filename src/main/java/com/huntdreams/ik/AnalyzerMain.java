@@ -55,9 +55,11 @@ public class AnalyzerMain {
         AnalyzerMain analyzer = new AnalyzerMain();
         String jsonFile = "data/apps.json";
         String tagFile = "data/tags.seg";
-        if (args.length == 1) {
+        if (args.length == 2) {
             jsonFile = args[0];
+            tagFile = args[1];
         }
+        System.out.println(jsonFile);
         analyzer.run(jsonFile, tagFile);
     }
 }
