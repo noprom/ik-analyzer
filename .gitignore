@@ -1,10 +1,8 @@
 .idea
 *.iml
 target
-conf/sysconfig.properties
-data/app/*.json
-data/app/*.txt
-data/apps.json
+bin/sysconfig.properties
+bin/*.json
+data/*.json
 out
 bin/json
-bin/*.json
