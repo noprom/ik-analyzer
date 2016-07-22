@@ -4,6 +4,7 @@ target
 conf/sysconfig.properties
 data/app/*.json
 data/app/*.txt
+data/apps.json
 out
 bin/json
 bin/*.json

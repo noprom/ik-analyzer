@@ -31,7 +31,7 @@ public class CompositeFactory {
                 try {
                     PropertiesConfiguration pc = new PropertiesConfiguration();
                     pc.setEncoding("utf8");
-                    pc.load("conf/sysconfig.properties");
+                    pc.load(Constant.SYS_CONF_PATH);
                     configuration.addConfiguration(pc);
                 } catch (ConfigurationException e) {
                     e.printStackTrace();

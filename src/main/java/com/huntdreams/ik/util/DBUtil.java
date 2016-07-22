@@ -16,11 +16,6 @@ import java.sql.SQLException;
  */
 public class DBUtil {
 
-    private static final String DRIVER_CLASS_NAME_KEY = "jdbc.driver";
-    private static final String URL_KEY = "jdbc.url";
-    private static final String USERNAME_KEY = "jdbc.username";
-    private static final String PASSWORD_KEY = "jdbc.password";
-
     /**
      * 获得数据库连接
      *
@@ -29,15 +24,15 @@ public class DBUtil {
     public static Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName(CompositeFactory.getInstance().getString(DRIVER_CLASS_NAME_KEY));
+            Class.forName(CompositeFactory.getInstance().getString(Constant.DRIVER_CLASS_NAME_KEY));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         try {
             conn = DriverManager.getConnection(
-                    CompositeFactory.getInstance().getString(URL_KEY),
-                    CompositeFactory.getInstance().getString(USERNAME_KEY),
-                    CompositeFactory.getInstance().getString(PASSWORD_KEY));
+                    CompositeFactory.getInstance().getString(Constant.URL_KEY),
+                    CompositeFactory.getInstance().getString(Constant.USERNAME_KEY),
+                    CompositeFactory.getInstance().getString(Constant.PASSWORD_KEY));
         } catch (SQLException e) {
             e.printStackTrace();
         }
